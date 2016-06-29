@@ -1,6 +1,10 @@
 {
-	"Authentication": {
-		"Token": "Discord-Token-Here"
+	"Bot": {
+		"Token": "Discord-Token-Here",
+		"Parameters": {
+			"autoReconnect": true,
+			"forceFetchUsers": true
+		}
 	},
 	"Logging": {
 		"Level": "info",
@@ -10,5 +14,14 @@
 	"ApiKeys": {
 		"Google": "Google-API-Key-Here",
 		"StackApps": "StackApps-API-Key-Here"
+	},
+	"Chat": {
+		"RespondToMention": true,
+		"StackCommand": "!stack",
+		"StackListCommand": "?stack"
+		"BotCommand": "!stackbot"
+	},
+	"Permissions": {
+		"Owners": ["DiscordID", "DiscordID"]
 	}
 }
