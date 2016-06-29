@@ -29,9 +29,12 @@
 
 try {
 	global.logger = require('winston');
-	global.logger = require('google');
-	
+	global.google = require('google');
 } catch (er) {
 	console.error('Please ensure you have installed and updated all dependencies!\n\nError details: ' + er.message);
 	process.exit(1);
 }
+
+
+
+require('./StackBot/StackBot.js');
