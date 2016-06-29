@@ -64,4 +64,4 @@ try {
    process.exit(1);
 }
 
-require('./StackBot/StackBot.js');
+global.StackBot = require('./StackBot/StackBot.js');
