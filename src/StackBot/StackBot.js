@@ -5,10 +5,6 @@ var Discord = require('discord.js');
 // Delcare bot
 global.BotClient = new Discord.Client(Config.Bot.Parameters);
 
-// Start bot
-Start();
-
-
 // Start. Starts and logs in the bot.
 var Start = function () {
 	logger.info('StackBot is starting!');
@@ -32,3 +28,7 @@ var Start = function () {
 	}
 };
 module.exports.Start = Start;
+
+
+// Start bot
+Start();

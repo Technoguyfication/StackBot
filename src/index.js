@@ -31,6 +31,10 @@
 try {
 	global.logger = require('winston');
 	global.google = require('google');
+	global.util = require('util');
+	global.fs = require('fs');
+	
+	global.Stats = require('./StackBot/Stats/Stats.js');
 } catch (er) {
 	console.error('Please ensure you have installed and updated all dependencies!\n\nError details: ' + er.message);
 	process.exit(1);
