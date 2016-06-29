@@ -18,7 +18,7 @@
 	"Chat": {
 		"RespondToMention": true,
 		"StackCommand": "!stack",
-		"StackListCommand": "?stack"
+		"StackListCommand": "?stack",
 		"BotCommand": "!stackbot"
 	},
 	"Permissions": {
