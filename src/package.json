@@ -1,0 +1,18 @@
+{
+  "name": "StackBot",
+  "description": "StackBot finds questions on StackOverflow and puts them in Discord chat.",
+  "author": "Hayden Andreyka <haydenandreyka@gmail.com>",
+  "version": "1.0.0",
+  "devDependencies": {
+    "jshint": "^2.6.0"
+  },
+  "dependencies": {
+  	"discord.js": "^7.0.0",
+  	"winston": "*",
+	"google": "*",
+	"jshint": "*"
+  },
+  "scripts": {
+    "test": "node ./node_modules/jshint/bin/jshint index.js StackBot/"
+  }
+}
