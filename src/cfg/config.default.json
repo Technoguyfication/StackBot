@@ -3,7 +3,9 @@
 		"Token": "Discord-Token-Here"
 	},
 	"Logging": {
-		"Level": "info"
+		"Level": "info",
+		"File": "stackbot.log",
+		"JSON": false
 	},
 	"ApiKeys": {
 		"Google": "Google-API-Key-Here",

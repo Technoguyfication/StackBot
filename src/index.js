@@ -27,6 +27,7 @@
 	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+// try loading global modules
 try {
 	global.logger = require('winston');
 	global.google = require('google');
@@ -35,6 +36,28 @@ try {
 	process.exit(1);
 }
 
+// try loading config
+try {
+	global.Config = require('./cfg/config.json');
+} catch (er) {
+	console.error('Unable to access config file! Make sure you make a new copy named \'config.json\' inside the cfg folder!\n\nError details: ' + er.message);
+	process.exit(1);
+}
 
+// try setting up logger
+try {
+	logger.level = Config.Logging.Level;	// loglevel
+	logger.add(	// send console log to additional location
+		logger.transports.File,	// file-based logging
+		
+		{
+			filename: Config.Logging.File,	// file path
+			json: (Config.Logging.JSON)		// use json?
+		}
+	);
+} catch (err) {
+   console.error('Failed to initalize logger: ' + err);
+   process.exit(1);
+}
 
 require('./StackBot/StackBot.js');
