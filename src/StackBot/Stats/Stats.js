@@ -7,7 +7,7 @@ var defaultStatsObject = function () {
 		questionsQueried: 0,
 		commandsRun: 0,
 		timestamp: Date.now()
-	}
+	};
 };
 
 var Database;
@@ -51,3 +51,8 @@ try {
 	Database = defaultStatsObject();
 	Save();
 }
+
+// save interval
+setInterval(() => {
+	Save();
+}, 900000); // fifteen minutes
