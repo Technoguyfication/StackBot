@@ -1,6 +1,6 @@
 // StackBot.js is essentially a wrapper that handles the most basic funtions of the bot
 
-var Discord = require('discord');
+var Discord = require('discord.js');
 
 // Delcare bot
 global.BotClient = new Discord.Client(Config.Bot.Parameters);
