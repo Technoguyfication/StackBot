@@ -1,7 +1,7 @@
 // command manager. manages commands. yeah.
 
 var Utility = require('./Utility.js');
-var BotCommand = require('./BotCommands.js');
+var BotCommands = require('./BotCommands.js');
 
 var processCommand = function(msg) {
 	// check if the message has any of the prefixes in it
@@ -11,7 +11,10 @@ var processCommand = function(msg) {
 		return true;
 	} else if (msg.content.toLowerCase().substring(0, Config.Chat.BotCommand.length) === Config.Chat.BotCommand) {					// Bot command
 		const cmd = msg.content.split(' ')[1].toLowerCase();
-		const args = Utility.getArguments(Utility.getArguments(msg.content));
+		var args = null;
+		
+		if (Utility.getArguments(msg.content).indexOf(' ') > -1)
+			args = Utility.getArguments(Utility.getArguments(msg.content));
 		
 		if (BotCommands[cmd] != (undefined||null)) {
 			if ((BotCommands[cmd].owner && Config.Permissions.Owners.indexOf(msg.author.id) > -1) || !BotCommands[cmd].owner) {

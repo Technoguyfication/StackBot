@@ -40,7 +40,7 @@ var Save = function () {
 		logger.verbose('Done saving statistics..');
 	});
 };
-module.exports.save = Save;	// export
+module.exports.Save = Save;	// export
 
 
 // try to load file otherwise default object

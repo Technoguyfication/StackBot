@@ -4,7 +4,10 @@ module.exports =
 		'owner': true,
 		'help': 'Stops StackBot.\n\n `Usage`\n```None```',
 		'run': (args, msg) => {
-			
+			Messages.Normal(msg.channel, 'StackBot is stopping.', (err) => {
+				logger.debug('STOP: Message sent, stopping...');
+				StackBot.Stop();
+			});
 		}
 	},
 	'eval': {

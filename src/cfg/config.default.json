@@ -17,9 +17,9 @@
 	},
 	"Chat": {
 		"RespondToMention": true,
-		"StackCommand": "!stack",
-		"StackListCommand": "?stack",
-		"BotCommand": "!stackbot"
+		"StackCommand": "!stack ",
+		"StackListCommand": "?stack ",
+		"BotCommand": "!stackbot "
 	},
 	"Permissions": {
 		"Owners": ["DiscordID", "DiscordID"]

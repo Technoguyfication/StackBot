@@ -4,6 +4,7 @@ var CommandManager = require('./Commands/CommandManager.js');
 
 // ready
 BotClient.on('ready', () => {
+	global.Messages = require('./Tools/Messages.js');
 	logger.info('StackBot is ready!');
 });
 

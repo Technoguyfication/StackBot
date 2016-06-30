@@ -11,7 +11,7 @@ function Normal(channel, message, callback) {
 			if (callback) return callback('Failed to send message: ' + err); else return;
 		} else {
 			logMessageSent(msg);
-			if (callback) return callback(); else return;
+			if (callback) return callback(null, msg); else return;
 		}
 	}
 }

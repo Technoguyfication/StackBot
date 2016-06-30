@@ -35,11 +35,14 @@ module.exports.Start = Start;
 // Stop. Saves stats and stops the bot.
 var Stop = function () {
 	Stats.Save();
-	BotClient.logout((err) => {
+	logger.info('Destroying client...');
+	BotClient.destroy((err) => {
 		if (err)
-			process.exit(1);
+			logger.info('Error while destroying client: %s. Shutting down.', err);
 		else
-			process.exit(0);
+			logger.info('Shutting down...');
+		
+		process.exit(0);
 	});
 };
 module.exports.Stop = Stop;
