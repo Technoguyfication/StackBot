@@ -1,5 +1,6 @@
 // Event handler. Does stuff with events.
 
+var CommandManager = require('./Commands/CommandManager.js');
 
 // ready
 BotClient.on('ready', () => {
@@ -19,7 +20,8 @@ BotClient.on('message', (msg) => {
 		return;
 	
 	// if the message was a command, reject message because the command handler already dealt with it
-	// write this later
+	if (CommandManager(msg))
+		return;
 	
 	function logMessage(msg) {
 		if (msg.channel.server)
