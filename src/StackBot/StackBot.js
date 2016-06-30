@@ -8,6 +8,10 @@ global.BotClient = new Discord.Client(Config.Bot.Parameters);
 // Start events
 require('./Events.js');
 
+// Public variables
+const startTime = Date.now();
+module.exports.startTime = startTime;
+
 // Start. Starts and logs in the bot.
 var Start = function () {
 	logger.info('StackBot is starting!');

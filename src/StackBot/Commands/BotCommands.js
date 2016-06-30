@@ -5,7 +5,6 @@ module.exports =
 		'help': 'Stops StackBot.\n\n `Usage`\n```None```',
 		'run': (args, msg) => {
 			Messages.Normal(msg.channel, 'StackBot is stopping.', (err) => {
-				logger.debug('STOP: Message sent, stopping...');
 				StackBot.Stop();
 			});
 		}
@@ -34,5 +33,13 @@ module.exports =
 		'run': (args, msg) => {
 			
 		}
+	},
+	'stats': {
+		'owner': false,
+		'help': 'Shows session and lifetime statistics for StackBot.\n\n `Usage`\n```None```',
+		'run': (args, msg) => {
+			
+		}
+		
 	}
 };

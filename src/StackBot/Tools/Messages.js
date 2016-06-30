@@ -20,7 +20,7 @@ module.exports.Normal = Normal;
 function logMessageSent(msg) {
 	try {
 		if (msg.channel.server)
-			logger.info('[SENT: (%s/%s:%s/%s) >> %s', msg.channel.server.name, msg.channel.server.id, msg.channel.name, msg.channel.id, msg.content);
+			logger.info('[SENT: (%s/%s : %s/%s) >> %s', msg.channel.server.name, msg.channel.server.id, msg.channel.name, msg.channel.id, msg.content);
 		else
 			logger.info('SENT DM: (%s/%s) >> %s', msg.channel.recipient.name, msg.channel.recipient.id, msg.content);
 	} catch(er) {

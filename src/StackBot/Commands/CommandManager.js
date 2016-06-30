@@ -6,10 +6,14 @@ var BotCommands = require('./BotCommands.js');
 var processCommand = function(msg) {
 	// check if the message has any of the prefixes in it
 	if (msg.content.toLowerCase().substring(0, Config.Chat.StackCommand.length) === Config.Chat.StackCommand) {						// Stack
+		Stats.DB().questionsQueried++;
 		return true;
 	} else if (msg.content.toLowerCase().substring(0, Config.Chat.StackListCommand.length) === Config.Chat.StackListCommand) {		// Stack List
+		Stats.DB().questionsQueried++;
 		return true;
 	} else if (msg.content.toLowerCase().substring(0, Config.Chat.BotCommand.length) === Config.Chat.BotCommand) {					// Bot command
+		Stats.DB().commandsRun++;
+		
 		const cmd = msg.content.split(' ')[1].toLowerCase();
 		var args = null;
 		
@@ -26,11 +30,11 @@ var processCommand = function(msg) {
 					Messages.Normal(msg.channel, 'Woah! Seems like you triggered an uncaught exception running that command. Try not to do it again.');
 				}
 			} else {	// user is denied access
-				logger.info('(%s/%s) was denied access to command \'%s\' with args \'%s\'', msg.author.name. msg.author.id, cmd, args);
+				logger.info('(%s/%s) was denied access to command \'%s\' with args \'%s\'', msg.author.name, msg.author.id, cmd, args);
 				Messages.Normal(msg.channel, util.format(':no_entry: Access Denied :no_entry:\n\nYou are unable to use the command `%s`', cmd));
 			}
 		} else
-			Messages.Normal(msg.channel, util.format('For usage and information, use `%s help`', Config.Chat.BotCommand));
+			Messages.Normal(msg.channel, util.format('For usage and information, use `%shelp`', Config.Chat.BotCommand));
 		
 		return true;
 	} else
