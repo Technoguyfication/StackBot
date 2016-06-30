@@ -35,6 +35,7 @@ try {
 	global.fs = require('fs');
 	
 	global.Stats = require('./StackBot/Stats/Stats.js');
+	global.Utility = require('./StackBot/Tools/Utility.js');
 } catch (er) {
 	console.error('Please ensure you have installed and updated all dependencies!\n\nError details: ' + er.message);
 	process.exit(1);

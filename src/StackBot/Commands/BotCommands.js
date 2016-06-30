@@ -38,7 +38,25 @@ module.exports =
 		'owner': false,
 		'help': 'Shows session and lifetime statistics for StackBot.\n\n `Usage`\n```None```',
 		'run': (args, msg) => {
-			
+			Messages.Normal(msg.channel, util.format(
+				" `Global Statistics`\n```xl\n" +
+				"                           Uptime: %s\n" +
+				"                    Messages Seen: %s\n" +
+				"StackOverflow Questions Processed: %s\n" +
+				"               Commands Processed: %s\n" +
+				"                Connected Servers: %s\n" +
+				"                    Visible Users: %s\n" +
+				"```\n*This data period started on %s.*", 
+				
+				Utility.msToString(Date.now() - StackBot.startTime),
+				
+				Stats.DB().messagesSeen,			// Messages seen
+				Stats.DB().questionsQueried,		// Questions processed
+				Stats.DB().commandsRun,				// Commands processed
+				
+				BotClient.servers.length,			// servers running on
+				BotClient.users.length,				// users visible
+				new Date(Stats.DB().timestamp).toString()));
 		}
 		
 	}
