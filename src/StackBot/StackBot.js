@@ -32,6 +32,18 @@ var Start = function () {
 };
 module.exports.Start = Start;
 
+// Stop. Saves stats and stops the bot.
+var Stop = function () {
+	Stats.Save();
+	BotClient.logout((err) => {
+		if (err)
+			process.exit(1);
+		else
+			process.exit(0);
+	});
+};
+module.exports.Stop = Stop;
+
 
 // Start bot
 Start();
