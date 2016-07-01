@@ -37,7 +37,7 @@ function runCommand(msg) {
 			try {
 				BotCommands[cmd].run(args, msg);
 			} catch(er) {
-				logger.warn('(%s/%s) triggered an uncaught error when running command \'%s\' with args \'%s\': %s', msg.author.name, msg.author.id, cmd, args, er.message);
+				logger.warn('(%s/%s) triggered an uncaught error when running command \'%s\' with args \'%s\': %s\n%s\n%s', msg.author.name, msg.author.id, cmd, args, er.message, er.fileName, er.lineNumber);
 				Messages.Normal(msg.channel, 'Woah! Seems like you triggered an uncaught exception running that command. Try not to do it again.');
 			}
 		} else {	// user is denied access

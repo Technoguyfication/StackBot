@@ -29,4 +29,4 @@ module.exports.msToString = function(milliseconds) {
         return seconds + ' second' + numberEnding(seconds);
     }
     return 'just now'; //'just now' //or other string you like;
-}
+};
