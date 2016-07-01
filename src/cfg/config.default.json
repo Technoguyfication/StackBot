@@ -12,7 +12,6 @@
 		"JSON": false
 	},
 	"ApiKeys": {
-		"Google": "Google-API-Key-Here",
 		"StackApps": "StackApps-API-Key-Here"
 	},
 	"Chat": {
