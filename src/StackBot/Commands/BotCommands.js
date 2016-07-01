@@ -42,7 +42,7 @@ var commandList = {
 				} else	// Command does not exist
 					Messages.Normal(msg.channel, util.format(':negative_squared_cross_mark:  That command does not exist! Do %shelp for a list of commands.', Config.Chat.BotCommand));
 			} else {
-				var helpCommands = new Array();
+				var helpCommands = [];
 				
 				// populate array of commands to display help for
 				for (var command in commandList) {
