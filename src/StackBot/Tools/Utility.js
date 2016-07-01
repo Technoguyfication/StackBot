@@ -30,3 +30,16 @@ module.exports.msToString = function(milliseconds) {
     }
     return 'just now'; //'just now' //or other string you like;
 };
+
+module.exports.emojiInteger = function(number) {
+	var digits = (""+number).split("");
+	const emojiArray = [':zero:', ':one:', ':two:', ':three:', ':four:', ':five:', ':six:', ':seven:', ':eight:', ':nine:'];
+	
+	var emojiString = "";
+	
+	digits.forEach((digit, index, array) => {
+		emojiString = util.format('%s%s', emojiString, emojiArray[parseInt(digit)]);
+	});
+	
+	return emojiString;
+};

@@ -2,11 +2,22 @@
 
 var CommandUtil = require('./CommandUtil.js');
 var BotCommands = require('./BotCommands.js');
+var StackManager = require('./../StackOverflow/StackManager.js');
 
 var processCommand = function(msg) {
 	// check if the message has any of the prefixes in it
 	if (msg.content.toLowerCase().substring(0, Config.Chat.StackCommand.length) === Config.Chat.StackCommand) {						// Stack
 		Stats.DB().questionsQueried++;
+		const stackQuery = msg.content.substring(Config.Chat.StackCommand.length, msg.content.length);
+		
+		logger.info('(%s/%s : %s/%s) (%s/%s) ran stack with args \'%s\'', msg.channel.server.name, msg.channel.server.id, msg.channel.name, msg.channel.id, msg.author.name, msg.author.id, stackQuery);
+		
+		if (msg.content.toLowerCase().trim() === Config.Chat.StackCommand.trim()) {	// user had no question
+			Messages.Normal(msg.channel, util.format('Usage: `%s(Stack Overflow Question)`', Config.Chat.StackCommand));
+			return true;
+		}
+		
+		StackManager.getStackQuestion(stackQuery, msg);
 		return true;
 	} else if (msg.content.toLowerCase().substring(0, Config.Chat.StackListCommand.length) === Config.Chat.StackListCommand) {		// Stack List
 		Stats.DB().questionsQueried++;

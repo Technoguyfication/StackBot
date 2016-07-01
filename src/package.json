@@ -10,7 +10,8 @@
   	"discord.js": "^7.0.0",
   	"winston": "*",
 	"google": "*",
-	"jshint": "*"
+	"jshint": "*",
+	"stackexchange": "*"
   },
   "scripts": {
     "test": "node ./node_modules/jshint/bin/jshint index.js StackBot/"

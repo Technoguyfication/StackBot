@@ -3,14 +3,12 @@
 var google = require('google');
 
 var findSOQuestions = function(searchText, callback) {
-	logger.verbose('GOOGLE: %s', searchText);
+	google.resultsPerPage = 5;	// limit this to five.
 	
-	google.resultsPerPage = 5;
-	
+	// perform google search
 	google(util.format('site:stackoverflow.com %s', searchText), (err, res) => {
 		if (err) {
-			logger.warn('Failed to perform Google search query: %s', err);
-			return callback(util.format('Failed to perform search query: %s', err));
+			return callback(err);
 		}
 		
 		var soQuestions = [];
@@ -27,7 +25,7 @@ var findSOQuestions = function(searchText, callback) {
 			try {
 				return title.substring(0, (title.length - stackoverflowSuffix.length));
 			} catch(er) {
-				logger.error('Failed to sanitize StackOverflow title! Has the format changed?');
+				logger.warn('Failed to sanitize StackOverflow title: %s', er.message);
 				return title;
 			}
 		}
