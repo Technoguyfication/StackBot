@@ -30,7 +30,6 @@
 // try loading global modules
 try {
 	global.logger = require('winston');
-	global.google = require('google');
 	global.util = require('util');
 	global.fs = require('fs');
 	
