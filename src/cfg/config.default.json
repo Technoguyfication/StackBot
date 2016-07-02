@@ -1,6 +1,7 @@
 {
 	"Bot": {
 		"Token": "Discord-Token-Here",
+		"ClientID": "Client-ID-Here",
 		"Parameters": {
 			"autoReconnect": true,
 			"forceFetchUsers": true

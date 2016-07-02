@@ -28,7 +28,7 @@ module.exports.msToString = function(milliseconds) {
     if (seconds) {
         return seconds + ' second' + numberEnding(seconds);
     }
-    return 'just now'; //'just now' //or other string you like;
+    return 'less than a secon'; //'just now' //or other string you like;
 };
 
 module.exports.emojiInteger = function(number) {

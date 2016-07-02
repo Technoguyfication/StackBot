@@ -40,7 +40,7 @@ var commandList = {
 					} else
 						Messages.Normal(msg.channel, util.format('Could not find help topic for command `%s`', args));
 				} else	// Command does not exist
-					Messages.Normal(msg.channel, util.format(':negative_squared_cross_mark:  That command does not exist! Do %shelp for a list of commands.', Config.Chat.BotCommand));
+					Messages.Normal(msg.channel, util.format('That command does not exist! Do `%shelp` for a list of commands.', Config.Chat.BotCommand));
 			} else {
 				var helpCommands = [];
 				
@@ -75,8 +75,8 @@ var commandList = {
 				
 				Messages.Normal(msg.channel, util.format(
 					'Hello, I\'m StackBot, and here\'s my list of commands:\n\n' +
-					'`%s(StackOverflow Query)` to grab a question and answer from StackOverflow.\n' +
-					'`%s(StackOverflow Query)` does the same as `%s` but lists available questions.\n\n' +
+					'`%s(Stack Overflow Query or Question ID)` to grab a question and answer from StackOverflow.\n' +
+					'`%s(Stack Overflow Query or Question ID)` does the same as `%s` but lists available questions and answers.\n\n' +
 					'**Append `%s` to front of the following commands:**\n' +
 					'%s\n\n' +
 					'*A webpage for contact information, support, and other details is coming soon.*',
@@ -104,15 +104,15 @@ var commandList = {
 		'run': (args, msg) => {
 			Messages.Normal(msg.channel, util.format(
 				" `Global Statistics`\n```xl\n" +
-				"                           Uptime: %s\n" +
+				"                           Uptime: %s (%sms)\n\n" +
 				"                    Messages Seen: %s\n" +
-				"StackOverflow Questions Processed: %s\n" +
-				"               Commands Processed: %s\n" +
+				"  StackOverflow Queries Processed: %s\n" +
+				"               Commands Processed: %s\n\n" +
 				"                Connected Servers: %s\n" +
 				"                    Visible Users: %s\n" +
 				"```\n*This data period started on %s.*", 
 				
-				Utility.msToString(Date.now() - StackBot.startTime),
+				Utility.msToString(Date.now() - StackBot.startTime), Date.now() - StackBot.startTime,
 				
 				Stats.DB().messagesSeen,			// Messages seen
 				Stats.DB().questionsQueried,		// Questions processed
@@ -128,7 +128,8 @@ var commandList = {
 		'help': 'Invite StackBot to your own server.',
 		'usage': 'None',
 		'run': (args, msg) => {
-			
+			/*const 'permissionsInteger';
+			const 'inviteLink';*/
 		}
 	}
 };

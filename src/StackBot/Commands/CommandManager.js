@@ -7,13 +7,11 @@ var StackManager = require('./../StackOverflow/StackManager.js');
 var processCommand = function(msg) {
 	// check if the message has any of the prefixes in it
 	if (msg.content.toLowerCase().substring(0, Config.Chat.StackCommand.length) === Config.Chat.StackCommand) {						// Stack
-		Stats.DB().questionsQueried++;
+		Stats.DB().questionsQueried++;	// increase stack count
 		const stackQuery = msg.content.substring(Config.Chat.StackCommand.length, msg.content.length);
 		
-		logger.info('(%s/%s : %s/%s) (%s/%s) ran stack with args \'%s\'', msg.channel.server.name, msg.channel.server.id, msg.channel.name, msg.channel.id, msg.author.name, msg.author.id, stackQuery);
-		
 		if (msg.content.toLowerCase().trim() === Config.Chat.StackCommand.trim()) {	// user had no question
-			Messages.Normal(msg.channel, util.format('Usage: `%s(Stack Overflow Question)`', Config.Chat.StackCommand));
+			Messages.Normal(msg.channel, util.format('Usage: `%s(Stack Overflow Query or Question ID)`', Config.Chat.StackCommand));
 			return true;
 		}
 		
@@ -49,11 +47,11 @@ function runCommand(msg) {
 				BotCommands[cmd].run(args, msg);
 			} catch(er) {
 				logger.warn('(%s/%s) triggered an uncaught error when running command \'%s\' with args \'%s\': %s\n%s\n%s', msg.author.name, msg.author.id, cmd, args, er.message, er.fileName, er.lineNumber);
-				Messages.Normal(msg.channel, 'Woah! Seems like you triggered an uncaught exception running that command. Try not to do it again.');
+				Messages.Normal(msg.channel, 'Woah! Seems like you triggered an uncaught exception running that command.');
 			}
 		} else {	// user is denied access
 			logger.info('(%s/%s) was denied access to command \'%s\' with args \'%s\'', msg.author.name, msg.author.id, cmd, args);
-			Messages.Normal(msg.channel, util.format(':no_entry: Access Denied :no_entry:\n\nYou are unable to use the command `%s`', cmd));
+			Messages.Normal(msg.channel, util.format(':no_entry: Sorry, but you do not have permission to access the command `%s`', cmd));
 		}
 	} else
 		Messages.Normal(msg.channel, util.format('For usage and information, use `%shelp`', Config.Chat.BotCommand));
