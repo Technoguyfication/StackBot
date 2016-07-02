@@ -32,6 +32,7 @@ try {
 	global.logger = require('winston');
 	global.util = require('util');
 	global.fs = require('fs');
+	global.entities = new (require('html-entities').AllHtmlEntities)();
 	
 	global.Stats = require('./StackBot/Stats/Stats.js');
 	global.Utility = require('./StackBot/Tools/Utility.js');

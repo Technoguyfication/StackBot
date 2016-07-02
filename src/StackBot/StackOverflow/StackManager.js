@@ -76,7 +76,7 @@ var getStackQuestion = function(searchText, msg) {
 			
 			question.title,
 			
-			question.answers[0].body_markdown,
+			entities.decode(question.answers[0].body_markdown),
 			
 			Utility.emojiInteger(question.answers[0].score),
 			question.answers[0].owner.display_name,

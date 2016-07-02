@@ -11,7 +11,8 @@
   	"winston": "*",
 	"google": "*",
 	"jshint": "*",
-	"stackexchange": "*"
+	"stackexchange": "*",
+	"html-entities": "*"
   },
   "scripts": {
     "test": "node ./node_modules/jshint/bin/jshint index.js StackBot/"
