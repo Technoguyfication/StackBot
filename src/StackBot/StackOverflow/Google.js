@@ -6,7 +6,7 @@ var findSOQuestions = function(searchText, callback) {
 	google.resultsPerPage = 5;	// limit this to five.
 	
 	// perform google search
-	google(util.format('site:stackoverflow.com %s', searchText), (err, res) => {
+	google(util.format('site:www.stackoverflow.com %s', searchText), (err, res) => {
 		if (err) {
 			return callback(err);
 		}
