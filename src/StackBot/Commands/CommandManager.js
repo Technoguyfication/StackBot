@@ -6,11 +6,11 @@ var StackManager = require('./../StackOverflow/StackManager.js');
 
 var processCommand = function(msg) {
 	// check if the message has any of the prefixes in it
-	if (msg.content.toLowerCase().substring(0, Config.Chat.StackCommand.length) === Config.Chat.StackCommand) {						// Stack
+	if (msg.content.toLowerCase().substring(0, Config.Chat.StackCommand.length).trim() === Config.Chat.StackCommand.trim()) {						// Stack
 		Stats.DB().questionsQueried++;	// increase stack count
 		const stackQuery = msg.content.substring(Config.Chat.StackCommand.length, msg.content.length);
 		
-		if (msg.content.toLowerCase().trim() === Config.Chat.StackCommand.trim()) {	// user had no question
+		if (msg.content.toLowerCase().trim() == Config.Chat.StackCommand.trim()) {	// user had no question
 			Messages.Normal(msg.channel, util.format('Usage: `%s(Stack Overflow Query or Question ID)`', Config.Chat.StackCommand));
 			return true;
 		}

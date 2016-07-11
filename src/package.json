@@ -12,7 +12,8 @@
 	"google": "*",
 	"jshint": "*",
 	"stackexchange": "*",
-	"html-entities": "*"
+	"html-entities": "*",
+	"winston-daily-rotate-file": "*"
   },
   "scripts": {
     "test": "node ./node_modules/jshint/bin/jshint index.js StackBot/"

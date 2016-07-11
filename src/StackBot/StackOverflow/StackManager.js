@@ -69,8 +69,8 @@ var getStackQuestion = function(searchText, msg) {
 	
 	function sendToChat(question) {
 		const finishedMessage = util.format(
-			'**%s**\n\n' +
-			'```%s ```\n' +
+			':information_source: **%s**\n\n' +
+			'%s\n\n\n' +
 			'**%s Points**\n\nAnswered by %s (%s reputation) at %s.\nLast edit made %s.\n\n' +
 			'*Use `%s` for more options.*',
 			

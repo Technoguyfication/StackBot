@@ -29,13 +29,10 @@
 
 // try loading global modules
 try {
-	global.logger = require('winston');
 	global.util = require('util');
 	global.fs = require('fs');
+	global.path = require('path');
 	global.entities = new (require('html-entities').AllHtmlEntities)();
-	
-	global.Stats = require('./StackBot/Stats/Stats.js');
-	global.Utility = require('./StackBot/Tools/Utility.js');
 } catch (er) {
 	console.error('Please ensure you have installed and updated all dependencies!\n\nError details: ' + er.message);
 	process.exit(1);
@@ -51,18 +48,33 @@ try {
 
 // try setting up logger
 try {
-	logger.level = Config.Logging.Level;	// loglevel
-	logger.add(	// send console log to additional location
-		logger.transports.File,	// file-based logging
-		
-		{
-			filename: Config.Logging.File,	// file path
-			json: (Config.Logging.JSON)		// use json?
-		}
-	);
+	var winston = require('winston');
+	
+	if (!fs.existsSync(Config.Logging.Directory))
+		fs.mkdirSync(Config.Logging.Directory);
+	
+	global.logger = new winston.Logger({	
+		level: Config.Logging.Level,
+		transports: [
+			new (winston.transports.Console)(),
+			new (require('winston-daily-rotate-file'))({
+				filename: path.join(Config.Logging.Directory, 'stackbot-'),
+				datePattern: 'yyyy-M-d.HH.mm.log',
+				json: Config.Logging.JSON
+			})
+		]
+	});
 } catch (err) {
    console.error('Failed to initalize logger: ' + err);
    process.exit(1);
+}
+// try loading classes
+try {
+	global.Stats = require('./StackBot/Stats/Stats.js');
+	global.Utility = require('./StackBot/Tools/Utility.js');
+} catch(er) {
+	logger.error('There was an error loading additional classes: %s', er.message);
+	process.exit(1);
 }
 
 global.StackBot = require('./StackBot/StackBot.js');

@@ -128,8 +128,10 @@ var commandList = {
 		'help': 'Invite StackBot to your own server.',
 		'usage': 'None',
 		'run': (args, msg) => {
-			/*const 'permissionsInteger';
-			const 'inviteLink';*/
+			const permissionsInteger = '84992';
+			const inviteLink = 'https://discordapp.com/oauth2/authorize?&client_id=%s&scope=bot&permissions=%s';
+			
+			const fullLink = util.format(inviteLink, Config.Bot.ClientID, permissionsInteger);
 		}
 	}
 };

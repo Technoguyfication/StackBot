@@ -9,7 +9,7 @@
 	},
 	"Logging": {
 		"Level": "info",
-		"File": "stackbot.log",
+		"Directory": "logs/",
 		"JSON": false
 	},
 	"ApiKeys": {
