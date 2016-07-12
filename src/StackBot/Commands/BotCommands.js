@@ -92,7 +92,21 @@ var commandList = {
 		'help': 'Information about StackBot.',
 		'usage': 'None',
 		'run': (args, msg) => {
+			const startTime = Date.now();
 			
+			const infoText = util.format(
+				'StackBot aims to be a useful utility that developers and users alike will find in handy.\n' +
+				'I\m written in Node.js (JavaScript) and built upon the Discord.js library.\n\n' +
+				'Author information and source code:\n' +
+				'**Primary Author:** Technoguyfication\n' +
+				'**Major Contributing Authors:** None Yet (Accepting pull requests!)\n' +
+				'**Source Code:** (GitHub) <https://github.com/Technoguyfication/StackBot\n\n' +
+				'*This command was processed in %sms. for more debugging information, use %sstats.*',
+				
+				Date.now() - startTime,
+				Config.Chat.BotCommand);
+			
+			Messages.Normal(msg.channel, infoText);
 		}
 	},
 	'stats': {
