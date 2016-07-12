@@ -40,6 +40,8 @@ var getStackQuestion = function(searchText, msg) {
 		getStackQuestionData(question, processStackAnswers);	// fetch data from stackoverflow
 	}
 	
+	//function getById 
+	
 	function processStackAnswers(err, question) {
 		if (err) {
 			logger.error('Error fetching stack answers: %s', err);

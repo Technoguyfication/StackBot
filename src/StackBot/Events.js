@@ -16,7 +16,7 @@ BotClient.on('message', (msg) => {
 	if (msg.author.bot)
 		return;
 	
-	// if the user is stackbot
+	// if the user is stackbot, reject message
 	if (msg.author.equals(BotClient.user))
 		return;
 	
@@ -24,6 +24,7 @@ BotClient.on('message', (msg) => {
 	if (CommandManager(msg))
 		return;
 	
+	// if the message hasn't been rejected yet it's probably a chat message so log it
 	function logMessage(msg) {
 		logger.info('MSG: %s >> %s', Utility.messageInfoString(msg), msg.content);
 	}
