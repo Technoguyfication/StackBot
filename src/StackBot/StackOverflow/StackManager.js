@@ -23,6 +23,8 @@ var getStackQuestion = function(searchText, msg) {
 			return;
 		}
 		
+		StackCache.Add(msg, searchResults);
+		
 		var question = {
 			url: searchResults[0].url,		// set question url
 			title: searchResults[0].title	// set question title
@@ -59,6 +61,21 @@ var getStackQuestion = function(searchText, msg) {
 	}
 };
 module.exports.getStackQuestion = getStackQuestion;
+
+var moreStackQuestions = function(msg) {
+	// user has never initiated stack command (since bot startup)
+	if (StackCache.Cache[msg.author.id][msg.channel.id] == (undefined||null)) {
+		Messages.Normal(msg.channel, util.format('You haven\'t used `%s` recently. Use `%shelp` for details.', Config.Chat.StackCommand.trim(), Config.Chat.BotCommand.trim()));
+		return;
+	}
+	
+	// user has not initiated stack command in the last x milliseconds
+	if (StackCache.Cache[msg.author.id][msg.channel.id].timestamp < (Date.now() - StackCache.validTime)) {
+		Messages.Normal(msg.channel, util.format('You haven\'t used `%s` in this channel in the last %s.', Config.Chat.StackCommand.trim(), Utility.msToString(StackCache.validTime)));
+		return;
+	}
+};
+module.exports.moreStackQuestions = moreStackQuestions;
 
 // post question data in chat
 function sendToChat(title, answer, url, msg) {

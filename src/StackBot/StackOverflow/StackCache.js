@@ -1,9 +1,10 @@
 var cache = {};
+const validTime = 300000;
 
-function Add(message, _searchResults) {
+function Add(message, searchResults) {
 	try {
 		cache[message.author.id][message.channel.id] = {
-			searchResults: _searchResults,
+			searchResults: searchResults,
 			timestamp: Date.now()
 		};
 	} catch(er) {
@@ -13,16 +14,15 @@ function Add(message, _searchResults) {
 
 module.exports.Cache = cache;
 module.exports.Add = Add;
+module.exports.validTime = validTime;
 
 // clean up cache every 5 minutes
 setInterval(() => {
-	const purgeTime = 300000;
-	
 	logger.debug('Cleaning up search cache..');
 	var deletedEntries = 0;
 	for (var user in cache) {
 		for (var channel in cache[user]) {
-			if (cache[user][channel].timestamp < Date.now() - purgeTime) {
+			if (cache[user][channel].timestamp < Date.now() - validTime) {
 				delete cache[user][channel];
 				deletedEntries++;
 			}

@@ -15,10 +15,22 @@ var processCommand = function(msg) {
 			return true;
 		}
 		
-		StackManager.getStackQuestion(stackQuery, msg);
+		try {
+			StackManager.getStackQuestion(stackQuery, msg);
+		} catch(er) {
+			logger.warn('Error while using stack command with args \'%s\':\n%s\n\nStacktrace:\n%s', stackQuery, er.message, er.stack);
+			Messages.Normal(msg.channel, 'An error occured with that query.\nTry again?');
+		}
 		return true;
 	} else if (msg.content.toLowerCase().substring(0, Config.Chat.StackListCommand.length) === Config.Chat.StackListCommand) {		// Stack List
 		Stats.DB().questionsQueried++;
+		
+		try {
+			StackManager.stackMoreQuestions(msg);
+		} catch(er) {
+			logger.warn('Error while using stack list command for %s:\n%s\n\nStacktrace:\n%s', Utility.messageInfoString(msg), er.message, er.stack);
+			Messages.Normal(msg.channel, 'An error occured with that query.\nTry again?');
+		}
 		return true;
 	} else if (msg.content.trim() === util.format('<@%s>', BotClient.user.id)) {													// Bot mention
 		Messages.Normal(msg.channel, util.format('Hi, I\'m StackBot! Type `%shelp` for commands and information.', Config.Chat.BotCommand, Config.Chat.StackCommand));
