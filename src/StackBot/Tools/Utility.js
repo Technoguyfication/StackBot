@@ -43,3 +43,10 @@ module.exports.emojiInteger = function(number) {
 	
 	return emojiString;
 };
+
+module.exports.messageInfoString = function(message) {
+	if (message.channel.server)
+		return util.format('[%s/%s : %s/%s] (%s/%s)', message.server.name, message.server.id, message.channel.name, message.channel.id, message.author.name, message.author.id);
+	else
+		return util.format('[PM: %s/%s (%s)]', message.author.name, message.author.id, message.channel.id);
+};

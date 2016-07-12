@@ -132,6 +132,8 @@ var commandList = {
 			const inviteLink = 'https://discordapp.com/oauth2/authorize?&client_id=%s&scope=bot&permissions=%s';
 			
 			const fullLink = util.format(inviteLink, Config.Bot.ClientID, permissionsInteger);
+			
+			Messages.Normal(msg.channel, util.format('Use this link to invite me to your own server:\n%s', fullLink));
 		}
 	}
 };

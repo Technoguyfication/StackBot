@@ -59,7 +59,7 @@ try {
 			new (winston.transports.Console)(),
 			new (require('winston-daily-rotate-file'))({
 				filename: path.join(Config.Logging.Directory, 'stackbot-'),
-				datePattern: 'yyyy-M-d.HH.mm.log',
+				datePattern: 'yyyy-M-d.log',
 				json: Config.Logging.JSON
 			})
 		]

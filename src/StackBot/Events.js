@@ -25,10 +25,7 @@ BotClient.on('message', (msg) => {
 		return;
 	
 	function logMessage(msg) {
-		if (msg.channel.server)
-			logger.info('[Message: (%s/%s) (%s/%s)] (%s/%s) >> %s', msg.channel.server.name, msg.channel.name, msg.channel.server.id, msg.channel.id, msg.author.name, msg.author.id, msg.content);
-		else
-			logger.info('[Private Message: (%s/%s) >> %s', msg.author.name, msg.author.id, msg.content);
+		logger.info('MSG: %s >> %s', Utility.messageInfoString(msg), msg.content);
 	}
 	
 	logMessage(msg);
