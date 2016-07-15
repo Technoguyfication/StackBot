@@ -82,12 +82,14 @@ module.exports.moreStackQuestions = moreStackQuestions;
 // post question data in chat
 function sendToChat(title, answer, url, msg) {
 		const finishedMessage = util.format(
-			'**%s**\n\n' +
+			'**%s**\n' +
+			'<%s>\n\n' +
 			'```%s```\n' +
 			'**%s Points**\n\nAnswered by **%s** (%s) %s ago.%s\n\n' +
 			'*Use `%s` for more options.*  **Note: It is not recommended to copy/paste code snippets from this message.**',
 			
 			title,
+			url,
 			
 			entities.decode(answer.body_markdown).replace('\'\'\'', '\''),
 			
@@ -95,7 +97,7 @@ function sendToChat(title, answer, url, msg) {
 			answer.owner.display_name,
 			answer.owner.reputation,
 			Utility.msToString(answer.creation_date),
-			(answer.creation_date == answer.last_activity_date ? '' : util.format('\nLast edit made %s ago.', Utility.msToString(answer.last_activity_date))),
+			(answer.last_edit_date ? '' : util.format('\nLast edit made %s ago.', Utility.msToString(answer.last_edit_date))),
 						
 			Config.Chat.StackListCommand);
 		
@@ -130,7 +132,7 @@ function getStackQuestionData(question, callback) {
 			
 			// sort answers by score
 			question.answers.sort((a, b) => {
-				return a - b;
+				return a.score - b.score;
 			});
 			
 			return callback(null, question);
