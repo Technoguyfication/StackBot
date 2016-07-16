@@ -85,7 +85,7 @@ function sendToChat(title, answer, url, msg) {
 			'**%s**\n' +
 			'<%s>\n\n' +
 			'```%s```\n' +
-			'**%s Points**\n\nAnswered by **%s** (%s) %s ago.%s\n\n' +
+			'**%s Points**\n\n%s %s ago.%s\n\n' +
 			'*Use `%s` for more options.*  **Note: It is not recommended to copy/paste code snippets from this message.**',
 			
 			title,
@@ -93,11 +93,10 @@ function sendToChat(title, answer, url, msg) {
 			
 			entities.decode(answer.body_markdown).replace('\'\'\'', '\''),
 			
-			Utility.emojiInteger(answer.score),
-			answer.owner.display_name,
-			answer.owner.reputation,
+			(answer.score > 0 ? Utility.emojiInteger(answer.score) : answer.score),
+			(answer.owner ? util.format('Answered by **%s** (%s)', answer.owner.display_name, answer.owner.reputation) : 'Answered'),
 			Utility.msToString(answer.creation_date),
-			(answer.last_edit_date ? '' : util.format('\nLast edit made %s ago.', Utility.msToString(answer.last_edit_date))),
+			(answer.last_edit_date ? (answer.last_edit_date == answer.creation_date ? util.format('\nLast edit made %s ago.', Utility.msToString(answer.last_edit_date)) : '') : '' ),
 						
 			Config.Chat.StackListCommand);
 		
@@ -132,8 +131,10 @@ function getStackQuestionData(question, callback) {
 			
 			// sort answers by score
 			question.answers.sort((a, b) => {
-				return a.score - b.score;
+				return parseInt(a.score) - parseInt(b.score);
 			});
+			
+			question.answers.reverse();
 			
 			return callback(null, question);
 		}
