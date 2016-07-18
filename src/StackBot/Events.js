@@ -6,6 +6,8 @@ var CommandManager = require('./Commands/CommandManager.js');
 BotClient.on('ready', () => {
 	global.Messages = require('./Tools/Messages.js');
 	logger.info('StackBot is ready!');
+	logger.info('Running on %s servers, %s channels, and with %s unique users.',
+			BotClient.servers.length, BotClient.channels.length, BotClient.users.length);
 });
 
 // message
@@ -29,5 +31,5 @@ BotClient.on('message', (msg) => {
 		logger.info('MSG: %s >> %s', Utility.messageInfoString(msg), msg.content);
 	}
 	
-	logMessage(msg);
+	logMessage(msg);	// log the shit mate
 });
