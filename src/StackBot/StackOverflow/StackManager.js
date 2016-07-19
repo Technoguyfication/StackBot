@@ -64,14 +64,18 @@ var getStackQuestion = function(searchText, msg) {
 module.exports.getStackQuestion = getStackQuestion;
 
 var moreStackQuestions = function(msg) {
+	// if there's not a user object in the cache make it now
+	if (StackCache.Cache()[msg.author.id] == (undefined||null))
+		StackCache.Cache()[msg.author.id] = {};
+	
 	// user has never initiated stack command (since bot startup)
-	if (StackCache.Cache[msg.author.id][msg.channel.id] == (undefined||null)) {
-		Messages.Normal(msg.channel, util.format('You haven\'t used `%s` recently. Use `%shelp` for details.', Config.Chat.StackCommand.trim(), Config.Chat.BotCommand.trim()));
+	if (StackCache.Cache()[msg.author.id][msg.channel.id] == (undefined||null)) {
+		Messages.Normal(msg.channel, util.format('You haven\'t used `%s` recently. Use `%shelp` for details.', Config.Chat.StackCommand.trim(), Config.Chat.BotCommand));
 		return;
 	}
 	
 	// user has not initiated stack command in the last x milliseconds
-	if (StackCache.Cache[msg.author.id][msg.channel.id].timestamp < (Date.now() - StackCache.validTime)) {
+	if (StackCache.Cache()[msg.author.id][msg.channel.id].timestamp < (Date.now() - StackCache.validTime)) {
 		Messages.Normal(msg.channel, util.format('You haven\'t used `%s` in this channel in the last %s.', Config.Chat.StackCommand.trim(), Utility.msToString(StackCache.validTime)));
 		return;
 	}
@@ -105,7 +109,7 @@ function sendToChat(title, answer, url, msg) {
 			url);
 		
 		Messages.Normal(msg.channel, (finishedMessage.length < 2000 ? finishedMessage : backupMessage));
-	}
+}
 
 // Sends user a list of possible questions, then a list of possible answers, then finally an answer
 var listStackQuestions = function(args) {

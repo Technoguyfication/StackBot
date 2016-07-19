@@ -3,7 +3,7 @@ const validTime = 300000;
 
 function Add(message, searchResults) {
 	try {
-		if (!cache[message.author.id]) cache[message.author.id] = {};
+		if (cache[message.author.id] != (undefined||null)) cache[message.author.id] = {};
 		
 		cache[message.author.id][message.channel.id] = {
 			searchResults: searchResults,
@@ -14,7 +14,7 @@ function Add(message, searchResults) {
 	}
 }
 
-module.exports.Cache = cache;
+module.exports.Cache = () => { return cache; };
 module.exports.Add = Add;
 module.exports.validTime = validTime;
 
