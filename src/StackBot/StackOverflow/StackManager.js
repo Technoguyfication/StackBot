@@ -84,6 +84,28 @@ var moreStackQuestions = function(msg) {
 		Messages.Normal(msg.channel, util.format('You haven\'t used `%s` in this channel in the last %s.', Config.Chat.StackCommand.trim(), Utility.msToString(StackCache.validTime)));
 		return;
 	}
+	
+	function displayPossibleQuestions() {
+		const questionEntryTemplate = '[%s] %s\n';
+		const cacheObject = StackCache.Cache()[msg.author.id][msg.channel.id];
+		
+		var questionBlock;
+		cacheObject.searchResults.forEach((result, index, array) => {
+			questionBlock = questionBlock + util.format(questionEntryTemplate, index, result.title);
+		});
+		
+		const messageTemplate = 'Here\'s a list of the possible questions I found:\n\n' +
+			'%s\n\n' +
+			'Please type the **number** of the question you want to select.\n' +
+			'(The number inside the boxes)';
+		
+		BotClient.awaitResponse(msg, util.format(messageTemplate, questionBlock), { tts: false }, (err, _msg) => {
+			if (err) {
+				logger.error('Error sending awaitreponse message: %s', err);
+				Messages.Normal(msg.channel, 'There was a problem sending you the message prompt. Try again?');
+			}
+		});
+	}
 };
 module.exports.moreStackQuestions = moreStackQuestions;
 
@@ -115,12 +137,6 @@ function sendToChat(title, answer, url, msg) {
 		
 		Messages.Normal(msg.channel, (finishedMessage.length < 2000 ? finishedMessage : backupMessage));
 }
-
-// Sends user a list of possible questions, then a list of possible answers, then finally an answer
-var listStackQuestions = function(args) {
-	
-};
-module.exports.listStackQuestions = listStackQuestions;
 
 // fetch data from stackoverflow based on question id
 function getStackQuestionData(question, callback) {
