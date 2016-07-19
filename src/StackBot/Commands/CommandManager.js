@@ -26,7 +26,7 @@ var processCommand = function(msg) {
 		Stats.DB().questionsQueried++;
 		
 		try {
-			StackManager.stackMoreQuestions(msg);
+			StackManager.moreStackQuestions(msg);
 		} catch(er) {
 			logger.warn('Error while using stack list command for %s:\n%s\n\nStacktrace:\n%s', Utility.messageInfoString(msg), er.message, er.stack);
 			Messages.Normal(msg.channel, 'An error occured with that query.\nTry again?');

@@ -3,6 +3,8 @@ const validTime = 300000;
 
 function Add(message, searchResults) {
 	try {
+		if (!cache[message.author.id]) cache[message.author.id] = {};
+		
 		cache[message.author.id][message.channel.id] = {
 			searchResults: searchResults,
 			timestamp: Date.now()

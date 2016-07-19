@@ -41,7 +41,6 @@ var getStackQuestion = function(searchText, msg) {
 	}
 	
 	//function getById 
-	
 	function processStackAnswers(err, question) {
 		if (err) {
 			logger.error('Error fetching stack answers: %s', err);
@@ -91,7 +90,7 @@ function sendToChat(title, answer, url, msg) {
 			title,
 			url,
 			
-			entities.decode(answer.body_markdown).replace('\'\'\'', '\''),
+			entities.decode(answer.body_markdown).replace('\'\'\'', '\''),	// replace ''' with '
 			
 			Utility.emojiInteger(answer.score),
 			answer.owner.display_name,
@@ -134,6 +133,8 @@ function getStackQuestionData(question, callback) {
 			question.answers.sort((a, b) => {
 				return a.score - b.score;
 			});
+			
+			question.answers.reverse();
 			
 			return callback(null, question);
 		}
