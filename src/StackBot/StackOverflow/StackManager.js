@@ -7,8 +7,13 @@ var StackCache = require('./StackCache.js');
 var getStackQuestion = function(searchText, msg) {
 	logger.info('%s stack with query \'%s\'', Utility.messageInfoString(msg), searchText);
 	
-	// perform search query
-	GoogleSearch.findSOQuestions(searchText, processGoogleResults);
+	if (!isNaN(searchText)) {
+		const stackUrlTemplate = 'http://stackoverflow.com/questions/%s';
+		getStackQuestionData({ url: util.format(stackUrlTemplate, searchText), title: util.format('Question ID: %s', searchText), id: parseInt(searchText)}, processStackAnswers); 
+	} else {
+		// perform search query
+		GoogleSearch.findSOQuestions(searchText, processGoogleResults);
+	}
 	
 	function processGoogleResults(err, searchResults) {
 		if (err) {
