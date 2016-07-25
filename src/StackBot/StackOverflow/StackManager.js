@@ -120,7 +120,7 @@ var moreStackQuestions = function(msg) {
 			
 			//user response was not a number
 			if (isNaN(selection)) {	// user did not send a valid string
-				Messages.Normal(msg.channel, 'You did not type a valid selection. Aborting.');
+				Messages.Normal(msg.channel, 'You did not enter a valid selection. Aborting.');
 				return;
 			}
 			
@@ -149,12 +149,14 @@ var moreStackQuestions = function(msg) {
 					logger.verbose('Failed to delete message: %s (Probably no permissions)', err);
 			});*/
 			
-			getStackQuesitonData(question, displayPossibleAnswers);
+			getStackQuestionData(question, displayPossibleAnswers);
 		});
 	}
 	
 	// display possible answers in chat and ask user to select one
-	function displayPossibleAnwers(err, question) {
+	function displayPossibleAnswers(err, question) {
+		logger.debug('getting possible answers..');
+		
 		if (err) {
 			logger.error('Failed getting stack question data: %s', err);
 			Messages.Normal(msg.channel, 'There was a problem fetching the information for that question. Try again maybe?');
@@ -179,7 +181,21 @@ var moreStackQuestions = function(msg) {
 				return;
 			}
 			
+			var selection = _msg.content.trim();
 			
+			if (isNaN(selection)) {
+				Messages.Normal(msg.channel, 'You did not enter a valid selection. Aborting.');
+				return;
+			}
+			
+			if (!question.answers[(selection - 1)]) {
+				Messages.Normal(msg.channel, util.format('Invalid selection. The number must be an integer between 1 and %s.', (questions.answers.length + 1)));
+				return;
+			}
+			
+			question.answer = answers[selection - 1];
+			
+			sendToChat(question, msg);
 		});
 	}
 };
