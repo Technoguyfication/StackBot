@@ -32,8 +32,8 @@ var processCommand = function(msg) {
 			Messages.Normal(msg.channel, 'An error occured with that query.\nTry again?');
 		}
 		return true;
-	} else if (msg.content.trim() === util.format('<@%s>', BotClient.user.id)) {													// Bot mention
-		Messages.Normal(msg.channel, util.format('Hi, I\'m StackBot! Type `%shelp` for commands and information.', Config.Chat.BotCommand, Config.Chat.StackCommand));
+	} else if (msg.content.replace('!', '').trim() == BotClient.user.toString()) {	// Bot mention
+		Messages.Normal(msg.channel, util.format('Hi, I\'m StackBot! Type `%shelp` for commands and information.', Config.Chat.BotCommand));
 		return true;
 	} else if (msg.content.toLowerCase().substring(0, Config.Chat.BotCommand.length) === Config.Chat.BotCommand) {					// Bot command
 		Stats.DB().commandsRun++;
