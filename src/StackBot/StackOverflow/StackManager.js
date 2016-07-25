@@ -100,7 +100,7 @@ var moreStackQuestions = function(msg) {
 		var questionBlock = '';	// init string so we don't get undefined crap everywhere
 		
 		cacheObject.searchResults.forEach((result, index, array) => {
-			questionBlock = questionBlock + util.format(questionEntryTemplate, (index + 1), result.title);
+			questionBlock += util.format(questionEntryTemplate, (index + 1), result.title);
 		});
 		
 		const messageTemplate = 'Here\'s a list of the possible questions I found:\n\n' +
@@ -134,13 +134,53 @@ var moreStackQuestions = function(msg) {
 				logger.verbose('%s\n\n%s', er.message, er.stack);
 			}
 			
+			const searchIndex = (selection + 1);
 			
+			// build question object
+			var question = {
+				url: cacheObject.searchResults[searchIndex].url,
+				title: cacheObject.searchresults[searchIndex].title,
+				id: getStackQuestionID(cacheObject.searchResults[searchIndex].url)
+			};
+			/* disable this for now since there is no way to delete the bot's message
+			
+			BotClient.deleteMessage(_msg, (err) => {	// clean up
+				if (err)
+					logger.verbose('Failed to delete message: %s (Probably no permissions)', err);
+			});*/
+			
+			getStackQuesitonData(question, displayPossibleAnswers);
 		});
 	}
 	
 	// display possible answers in chat and ask user to select one
-	function displayPossibleAnwers(result, _msg) {
-		getStackQuestionData();
+	function displayPossibleAnwers(err, question) {
+		if (err) {
+			logger.error('Failed getting stack question data: %s', err);
+			Messages.Normal(msg.channel, 'There was a problem fetching the information for that question. Try again maybe?');
+		}
+		
+		const answerEntryTemplate = '**[%s]** %s points - by %s (%s rep)\n';
+		const messageTemplate = 'Here\'s the list of answers I fetched for you:\n\n' +
+			'%s\n\n' +
+			'Please type the **number** of the answer you want to select.\n' +
+			'(The number inside the boxes)';
+		
+		var answerBlock = '';	// empty string so we don't get undefined crap all over
+		
+		question.answers.forEach((answer, index, array) => {
+			answerBlock += util.format(answerEntryTemplate, (index + 1), answer.score, answer.owner.name, answer.owner.reputation);
+		});
+		
+		Messages.Await(msg, util.format(messageTemplate, answerBlock), (err, _msg) => {
+			if (err) {
+				logger.error('Error sending awaitresponsemessage: %s', err);
+				Messages.Normal('There was an error sending the selection prompt. Try again?');
+				return;
+			}
+			
+			
+		});
 	}
 };
 module.exports.moreStackQuestions = moreStackQuestions;
