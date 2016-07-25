@@ -82,7 +82,6 @@ var commandList = {
 					
 					Config.Chat.StackCommand,
 					Config.Chat.StackCommand,
-					Config.Chat.BotCommand,
 					helpBlock));
 			}
 		}
