@@ -70,8 +70,10 @@ module.exports.getStackQuestion = getStackQuestion;
 
 var moreStackQuestions = function(msg) {
 	// if there's not a user object in the cache make it now
-	if (StackCache.Cache()[msg.author.id] == (undefined||null))
+	if (StackCache.Cache()[msg.author.id] == (undefined||null)) {
+		logger.verbose('Creating user entry in stack cache for %s (%s)', msg.author.name, msg.author.id);
 		StackCache.Cache()[msg.author.id] = {};
+	}
 	
 	// user has never initiated stack command (since bot startup)
 	if (StackCache.Cache()[msg.author.id][msg.channel.id] == (undefined||null)) {
@@ -84,6 +86,8 @@ var moreStackQuestions = function(msg) {
 		Messages.Normal(msg.channel, util.format('You haven\'t used `%s` in this channel in the last %s.', Config.Chat.StackCommand.trim(), Utility.msToString(StackCache.validTime)));
 		return;
 	}
+	
+	displayPossibleQuestions();
 	
 	function displayPossibleQuestions() {
 		const questionEntryTemplate = '[%s] %s\n';
@@ -99,7 +103,7 @@ var moreStackQuestions = function(msg) {
 			'Please type the **number** of the question you want to select.\n' +
 			'(The number inside the boxes)';
 		
-		BotClient.awaitResponse(msg, util.format(messageTemplate, questionBlock), { tts: false }, (err, _msg) => {
+		BotClient.awaitResponse(msg, util.format(messageTemplate, questionBlock), (err, _msg) => {
 			if (err) {
 				logger.error('Error sending awaitreponse message: %s', err);
 				Messages.Normal(msg.channel, 'There was a problem sending you the message prompt. Try again?');
