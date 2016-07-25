@@ -38,7 +38,12 @@ module.exports.emojiInteger = function(number) {
 	var emojiString = "";
 	
 	digits.forEach((digit, index, array) => {
-		emojiString = util.format('%s%s', emojiString, emojiArray[parseInt(digit)]);
+		try {
+			emojiString = util.format('%s%s', emojiString, emojiArray[parseInt(digit)]);
+		} catch(er) {
+			logger.warning('Failed parsing \'%s\' as emoji. (Not an integer?)', number);
+			return number;
+		}
 	});
 	
 	return emojiString;
