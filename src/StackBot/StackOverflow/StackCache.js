@@ -1,9 +1,9 @@
 var cache = {};
-const validTime = 300000;
+const validTime = 300000;	// five minutes
 
 function Add(message, searchResults) {
 	try {
-		if (cache[message.author.id] != (undefined||null)) cache[message.author.id] = {};
+		if (cache[message.author.id] === (undefined||null)) cache[message.author.id] = {};
 		
 		cache[message.author.id][message.channel.id] = {
 			searchResults: searchResults,
