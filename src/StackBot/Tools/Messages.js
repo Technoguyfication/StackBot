@@ -18,7 +18,7 @@ function Normal(channel, message, callback) {
 module.exports.Normal = Normal;
 
 function Await(msg, prompt, callback) {
-	BotClient.awaitResponse(message, prompt, processResponse);
+	BotClient.awaitResponse(msg, util.format('%s%s', invisCharacter, prompt), processResponse);
 	
 	function processResponse(err, _msg) {
 		if (err) {
