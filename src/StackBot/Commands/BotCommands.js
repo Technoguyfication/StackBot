@@ -75,7 +75,7 @@ var commandList = {
 				
 				Messages.Normal(msg.channel, util.format(
 					'Hello, I\'m StackBot, and here\'s my list of commands:\n\n' +
-					'`%s(Stack Overflow Query or Question ID)` to grab a question and answer from StackOverflow.\n' +
+					'`%s(Stack Overflow Query or Question ID)` to grab a question and answer from StackOverflow.\n\n' +
 					'**Append `%s` to front of the following commands:**\n' +
 					'%s\n\n' +
 					'*A webpage for contact information, support, and other details is coming soon.*',
