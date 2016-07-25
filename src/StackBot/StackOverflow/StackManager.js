@@ -100,7 +100,7 @@ var moreStackQuestions = function(msg) {
 		var questionBlock = '';	// init string so we don't get undefined crap everywhere
 		
 		cacheObject.searchResults.forEach((result, index, array) => {
-			questionBlock = questionBlock + util.format(questionEntryTemplate, index, result.title);
+			questionBlock = questionBlock + util.format(questionEntryTemplate, (index + 1), result.title);
 		});
 		
 		const messageTemplate = 'Here\'s a list of the possible questions I found:\n\n' +
@@ -125,10 +125,16 @@ var moreStackQuestions = function(msg) {
 			}
 			
 			// number was not part of list
-			if (!cacheObject.searchResults[(parseInt(selection) + 1)]) {
-				Messages.Normal(msg.channel, util.format('That number was not a valid selection. Please type an integer between 1 and %s', (cacheObject.searchResults.length - 1)));
-				return;
+			try {	// try / catch because someone could fuck it up with a negative or float
+				if (!cacheObject.searchResults[(parseInt(selection) + 1)]) {
+					Messages.Normal(msg.channel, util.format('That number was not a valid selection. Please type an integer between 1 and %s', (cacheObject.searchResults.length - 1)));
+					return;
+				}
+			} catch (er) {
+				logger.verbose('%s\n\n%s', er.message, er.stack);
 			}
+			
+			
 		});
 	}
 	
