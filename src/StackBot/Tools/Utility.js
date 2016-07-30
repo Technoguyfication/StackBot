@@ -11,7 +11,7 @@ module.exports.msToString = function(milliseconds) {
     if (years) {
         return years + ' year' + numberEnding(years);
     }
-    //TODO: Months! Maybe weeks? 
+    //TODO: Months! Maybe weeks?
     var days = Math.floor((temp %= 31536000) / 86400);
     if (days) {
         return days + ' day' + numberEnding(days);
@@ -28,15 +28,15 @@ module.exports.msToString = function(milliseconds) {
     if (seconds) {
         return seconds + ' second' + numberEnding(seconds);
     }
-    return 'less than a secon'; //'just now' //or other string you like;
+    return 'less than a second'; //'just now' //or other string you like;
 };
 
 module.exports.emojiInteger = function(number) {
 	var digits = (""+number).split("");
 	const emojiArray = [':zero:', ':one:', ':two:', ':three:', ':four:', ':five:', ':six:', ':seven:', ':eight:', ':nine:'];
-	
+
 	var emojiString = "";
-	
+
 	digits.forEach((digit, index, array) => {
 		try {
 			emojiString = util.format('%s%s', emojiString, emojiArray[parseInt(digit)]);
@@ -45,7 +45,7 @@ module.exports.emojiInteger = function(number) {
 			return number;
 		}
 	});
-	
+
 	return emojiString;
 };
 
