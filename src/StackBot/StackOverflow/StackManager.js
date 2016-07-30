@@ -91,8 +91,10 @@ var moreStackQuestions = function(msg) {
 		return;
 	}
 	
+	// TODO: add support for getting more answers if you previously searched by question ID
 	displayPossibleQuestions();
 	
+	// display possible questions from google
 	function displayPossibleQuestions() {
 		const questionEntryTemplate = '**[%s]** *%s*\n';
 		const cacheObject = StackCache.Cache()[msg.author.id][msg.channel.id];
@@ -108,33 +110,35 @@ var moreStackQuestions = function(msg) {
 			'Please type the **number** of the question you want to select.\n' +
 			'(The number inside the boxes)';
 		
+		// send prompt for user to select question
 		Messages.Await(msg, util.format(messageTemplate, questionBlock), (err, _msg) => {
 			if (err) {
-				logger.error('Error sending awaitreponse message: %s', err);
+				logger.error('Error sending question selection prompt: %s', err);
 				Messages.Normal(msg.channel, 'There was a problem sending you the message prompt. Try again?');
 				return;
 			}
 			
-			// validate user response
 			var selection = _msg.content.trim();
 			
 			//user response was not a number
-			if (isNaN(selection)) {	// user did not send a valid string
+			if (isNaN(selection)) {
 				Messages.Normal(msg.channel, 'You did not enter a valid selection. Aborting.');
 				return;
 			}
 			
+			const searchIndex = (selection - 1);
+			
 			// number was not part of list
-			try {	// try / catch because someone could fuck it up with a negative or float
-				if (!cacheObject.searchResults[(parseInt(selection) + 1)]) {
-					Messages.Normal(msg.channel, util.format('That number was not a valid selection. Please type an integer between 1 and %s', (cacheObject.searchResults.length - 1)));
+			try {
+				if (cacheObject.searchResults[searchIndex] === (undefined||null)) {
+					Messages.Normal(msg.channel, 'That number was not a valid selection.');
 					return;
 				}
 			} catch (er) {
 				logger.verbose('%s\n\n%s', er.message, er.stack);
+				Messages.Normal(msg.channel, 'That number was not a valid selection. Please enter ONLY an integer number.');
+				return;
 			}
-			
-			const searchIndex = (selection + 1);
 			
 			// build question object
 			var question = {
@@ -142,12 +146,6 @@ var moreStackQuestions = function(msg) {
 				title: cacheObject.searchresults[searchIndex].title,
 				id: getStackQuestionID(cacheObject.searchResults[searchIndex].url)
 			};
-			/* disable this for now since there is no way to delete the bot's message
-			
-			BotClient.deleteMessage(_msg, (err) => {	// clean up
-				if (err)
-					logger.verbose('Failed to delete message: %s (Probably no permissions)', err);
-			});*/
 			
 			getStackQuestionData(question, displayPossibleAnswers);
 		});
@@ -155,11 +153,12 @@ var moreStackQuestions = function(msg) {
 	
 	// display possible answers in chat and ask user to select one
 	function displayPossibleAnswers(err, question) {
-		logger.debug('getting possible answers..');
+		logger.debug('Getting possible answers..');
 		
 		if (err) {
 			logger.error('Failed getting stack question data: %s', err);
 			Messages.Normal(msg.channel, 'There was a problem fetching the information for that question. Try again maybe?');
+			return;
 		}
 		
 		const answerEntryTemplate = '**[%s]** %s points - by %s (%s rep)\n';
@@ -168,15 +167,16 @@ var moreStackQuestions = function(msg) {
 			'Please type the **number** of the answer you want to select.\n' +
 			'(The number inside the boxes)';
 		
-		var answerBlock = '';	// empty string so we don't get undefined crap all over
+		var answerBlock = '';	// empty string so we don't get undefined crap everywhere
 		
+		// put question entries into a block one-by-one
 		question.answers.forEach((answer, index, array) => {
 			answerBlock += util.format(answerEntryTemplate, (index + 1), answer.score, answer.owner.name, answer.owner.reputation);
 		});
 		
 		Messages.Await(msg, util.format(messageTemplate, answerBlock), (err, _msg) => {
 			if (err) {
-				logger.error('Error sending awaitresponsemessage: %s', err);
+				logger.error('Error sending answers prompt: %s', err);
 				Messages.Normal('There was an error sending the selection prompt. Try again?');
 				return;
 			}
@@ -188,12 +188,14 @@ var moreStackQuestions = function(msg) {
 				return;
 			}
 			
-			if (!question.answers[(selection - 1)]) {
+			var selectionIndex = selection - 1;
+			
+			if (!question.answers[selectionIndex]) {
 				Messages.Normal(msg.channel, util.format('Invalid selection. The number must be an integer between 1 and %s.', (questions.answers.length + 1)));
 				return;
 			}
 			
-			question.answer = answers[selection - 1];
+			question.answer = answers[selectionIndex];
 			
 			sendToChat(question, msg);
 		});
