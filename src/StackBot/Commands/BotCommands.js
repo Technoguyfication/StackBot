@@ -95,12 +95,12 @@ var commandList = {
 			
 			const infoText = util.format(
 				'StackBot aims to be a useful utility that developers and users alike will find in handy.\n' +
-				'I\m written in Node.js (JavaScript) and built upon the Discord.js library.\n\n' +
+				'I\'m written in Node.js (JavaScript) and built upon the Discord.js library.\n\n' +
 				'Author information and source code:\n' +
 				'**Primary Author:** Technoguyfication\n' +
 				'**Major Contributing Authors:** None Yet (Accepting pull requests!)\n' +
-				'**Source Code:** (GitHub) <https://github.com/Technoguyfication/StackBot\n\n' +
-				'*This command was processed in %sms. for more debugging information, use %sstats.*',
+				'**Source Code:** (GitHub) <https://github.com/Technoguyfication/StackBot>\n\n' +
+				'*This command was processed in %sms, for more debugging information, use `%sstats`.*',
 				
 				Date.now() - startTime,
 				Config.Chat.BotCommand);
@@ -118,6 +118,8 @@ var commandList = {
 				"                           Uptime: %s (%sms)\n\n" +
 				"                    Messages Seen: %s\n" +
 				"  StackOverflow Queries Processed: %s\n" +
+				"       External API Requests Made: %s\n" +
+				"            Accumulated Live Time: %s\n" +
 				"               Commands Processed: %s\n\n" +
 				"                Connected Servers: %s\n" +
 				"                    Visible Users: %s\n" +
@@ -127,6 +129,8 @@ var commandList = {
 				
 				Stats.DB().messagesSeen,			// Messages seen
 				Stats.DB().questionsQueried,		// Questions processed
+				Stats.DB().apiRequests,				// Api Requests Made
+				Utility.msToString(Stats.DB().liveTime + (Date.now() - StackBot.startTime)),	// Live time
 				Stats.DB().commandsRun,				// Commands processed
 				
 				BotClient.servers.length,			// servers running on

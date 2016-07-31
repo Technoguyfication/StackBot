@@ -140,26 +140,30 @@ var moreStackQuestions = function(msg) {
 				return;
 			}
 			
+			logger.silly('valid question selection');
+			
 			// build question object
-			var question = {
+			var _question = {
 				url: cacheObject.searchResults[searchIndex].url,
 				title: cacheObject.searchresults[searchIndex].title,
 				id: getStackQuestionID(cacheObject.searchResults[searchIndex].url)
 			};
 			
-			getStackQuestionData(question, displayPossibleAnswers);
+			logger.silly(_question);
+			
+			getStackQuestionData(_question, displayPossibleAnswers);
 		});
 	}
 	
 	// display possible answers in chat and ask user to select one
-	function displayPossibleAnswers(err, question) {
-		logger.debug('Getting possible answers..');
-		
+	function displayPossibleAnswers(err, question) {		
 		if (err) {
 			logger.error('Failed getting stack question data: %s', err);
 			Messages.Normal(msg.channel, 'There was a problem fetching the information for that question. Try again maybe?');
 			return;
 		}
+		
+		logger.debug('Getting possible answers..');
 		
 		const answerEntryTemplate = '**[%s]** %s points - by %s (%s rep)\n';
 		const messageTemplate = 'Here\'s the list of answers I fetched for you:\n\n' +
@@ -190,12 +194,12 @@ var moreStackQuestions = function(msg) {
 			
 			var selectionIndex = selection - 1;
 			
-			if (!question.answers[selectionIndex]) {
-				Messages.Normal(msg.channel, util.format('Invalid selection. The number must be an integer between 1 and %s.', (questions.answers.length + 1)));
+			if (question.answers[selectionIndex] === (undefined||null)) {
+				Messages.Normal(msg.channel, 'That number was not a valid selection.');
 				return;
 			}
 			
-			question.answer = answers[selectionIndex];
+			question.answer = question.answers[selectionIndex];
 			
 			sendToChat(question, msg);
 		});
@@ -205,31 +209,31 @@ module.exports.moreStackQuestions = moreStackQuestions;
 
 // post question data in chat
 function sendToChat(question, msg) {
-		const finishedMessage = util.format(
-			'**%s**\n' +
-			'<%s>\n\n' +
-			'```%s```\n' +
-			'**%s Points**\n\nAnswered by **%s** (%s) %s ago.%s\n\n' +
-			'*Use `%s` for more options.*  **Note: It is not recommended to copy/paste code snippets from this message.**',
-			
-			question.title,
-			question.url,
-			
-			entities.decode(question.answer.body_markdown).replace('\'\'\'', '\''),	// replace ''' with '
-			
-			Utility.emojiInteger(question.answer.score),
-			question.answer.owner.display_name,
-			question.answer.owner.reputation,
-			Utility.msToString(question.answer.creation_date),
-			(question.answer.last_edit_date ? '' : util.format('\nLast edit made %s ago.', Utility.msToString(question.answer.last_edit_date))),
-						
-			Config.Chat.StackListCommand);
-		
-		const backupMessage = util.format(
-			'The answer I fetched for you is too big to fit into Discord. Here\'s a link to it instead:\n<%s>',
-			question.url);
-		
-		Messages.Normal(msg.channel, (finishedMessage.length < 2000 ? finishedMessage : backupMessage));
+	const finishedMessage = util.format(
+		'**%s**\n' +
+		'<%s>\n\n' +
+		'```%s```\n' +
+		'**%s Points**\n\nAnswered by **%s** (%s) %s ago.%s\n\n' +
+		'*Use `%s` for more options.*  **Note: It is not recommended to copy/paste code snippets from this message.**',
+
+		question.title,
+		question.url,
+
+		entities.decode(question.answer.body_markdown).replace('\'\'\'', '\''),	// replace ''' with '
+
+		Utility.emojiInteger(question.answer.score),
+		question.answer.owner.display_name,
+		question.answer.owner.reputation,
+		Utility.msToString(question.answer.creation_date),
+		(question.answer.last_edit_date ? '' : util.format('\nLast edit made %s ago.', Utility.msToString(question.answer.last_edit_date))),
+
+		Config.Chat.StackListCommand);
+
+	const backupMessage = util.format(
+		'The answer I fetched for you is too big to fit into Discord. Here\'s a link to it instead:\n<%s>',
+		question.url);
+
+	Messages.Normal(msg.channel, (finishedMessage.length < 2000 ? finishedMessage : backupMessage));
 }
 
 // fetch data from stackoverflow based on question id - adds 'answers' object to question object. expects an id property of question
@@ -241,26 +245,28 @@ function getStackQuestionData(question, callback) {
 	};
 	
 	logger.verbose('STACK: Fetching data for question %s.', question.id);
+	Stats.DB().apiRequests++;
 	
 	stackexchange.questions.answers(filter, (err, results) => {
 		if (err)
 			return callback(err);
-		else {
-			question.answers = results.items;	// set question answers
-			
-			// sort answers by score
-			question.answers.sort((a, b) => {
-				return a.score - b.score;
-			});
-			
-			question.answers.reverse();
-			
-			return callback(null, question);
-		}
+		
+		// set question answers
+		question.answers = results.items;
+
+		// sort answers by score
+		question.answers.sort((a, b) => {
+			return a.score - b.score;
+		});
+
+		question.answers.reverse();
+
+		return callback(null, question);
 	}, [question.id]);
 }
 
 function getStackQuestionID(url) {
+	logger.debug('getting stack id for url %s', url);
 	var qIDRegex = /.*stackoverflow.com\/questions\/(\d+)\//;
 	
 	try {

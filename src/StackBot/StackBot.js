@@ -38,6 +38,7 @@ module.exports.Start = Start;
 
 // Stop. Saves stats and stops the bot.
 var Stop = function () {
+	Stats.DB().liveTime += (Date.now() - startTime);
 	Stats.Save();
 	logger.info('Destroying client...');
 	BotClient.destroy((err) => {
