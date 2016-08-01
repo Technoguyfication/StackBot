@@ -55,7 +55,7 @@ var getStackQuestion = function(searchText, msg) {
 		
 		if (question.answers.length < 1) {
 			logger.warn('Stack Overflow question %s has no answers.', question.id);
-			Messages.Normal(msg.channel, util.format('The most suitable question found (%s - %s) contained no answers. Try using %s for more options.',
+			Messages.Normal(msg.channel, util.format('The most suitable question found (%s - %s) contained no answers. Try using `%s` for more options.',
 				
 				question.title,
 				question.id,
@@ -63,7 +63,11 @@ var getStackQuestion = function(searchText, msg) {
 			return;
 		}
 		
-		sendToChat(question.title, question.answers[0], question.url, msg);
+		sendToChat({
+			title: question.title,
+			answer: question.answers[0],
+			url: question.url,
+		}, msg);
 	}
 };
 module.exports.getStackQuestion = getStackQuestion;
@@ -87,15 +91,18 @@ var moreStackQuestions = function(msg) {
 		return;
 	}
 	
+	// TODO: add support for getting more answers if you previously searched by question ID
 	displayPossibleQuestions();
 	
+	// display possible questions from google
 	function displayPossibleQuestions() {
-		const questionEntryTemplate = '[%s] %s\n';
+		const questionEntryTemplate = '**[%s]** *%s*\n';
 		const cacheObject = StackCache.Cache()[msg.author.id][msg.channel.id];
 		
-		var questionBlock;
+		var questionBlock = '';	// init string so we don't get undefined crap everywhere
+		
 		cacheObject.searchResults.forEach((result, index, array) => {
-			questionBlock = questionBlock + util.format(questionEntryTemplate, index, result.title);
+			questionBlock += util.format(questionEntryTemplate, (index + 1), result.title);
 		});
 		
 		const messageTemplate = 'Here\'s a list of the possible questions I found:\n\n' +
@@ -103,46 +110,133 @@ var moreStackQuestions = function(msg) {
 			'Please type the **number** of the question you want to select.\n' +
 			'(The number inside the boxes)';
 		
-		BotClient.awaitResponse(msg, util.format(messageTemplate, questionBlock), (err, _msg) => {
+		// send prompt for user to select question
+		Messages.Await(msg, util.format(messageTemplate, questionBlock), (err, _msg) => {
 			if (err) {
-				logger.error('Error sending awaitreponse message: %s', err);
+				logger.error('Error sending question selection prompt: %s', err);
 				Messages.Normal(msg.channel, 'There was a problem sending you the message prompt. Try again?');
+				return;
 			}
+			
+			var selection = _msg.content.trim();
+			
+			//user response was not a number
+			if (isNaN(selection)) {
+				Messages.Normal(msg.channel, 'You did not enter a valid selection. Aborting.');
+				return;
+			}
+			
+			const searchIndex = (selection - 1);
+			
+			// number was not part of list
+			try {
+				if (cacheObject.searchResults[searchIndex] === (undefined||null)) {
+					Messages.Normal(msg.channel, 'That number was not a valid selection.');
+					return;
+				}
+			} catch (er) {
+				logger.verbose('%s\n\n%s', er.message, er.stack);
+				Messages.Normal(msg.channel, 'That number was not a valid selection. Please enter ONLY an integer number.');
+				return;
+			}
+			
+			logger.silly('valid question selection');
+			
+			// build question object
+			var _question = {
+				url: cacheObject.searchResults[searchIndex].url,
+				title: cacheObject.searchresults[searchIndex].title,
+				id: getStackQuestionID(cacheObject.searchResults[searchIndex].url)
+			};
+			
+			logger.silly(_question);
+			
+			getStackQuestionData(_question, displayPossibleAnswers);
+		});
+	}
+	
+	// display possible answers in chat and ask user to select one
+	function displayPossibleAnswers(err, question) {		
+		if (err) {
+			logger.error('Failed getting stack question data: %s', err);
+			Messages.Normal(msg.channel, 'There was a problem fetching the information for that question. Try again maybe?');
+			return;
+		}
+		
+		logger.debug('Getting possible answers..');
+		
+		const answerEntryTemplate = '**[%s]** %s points - by %s (%s rep)\n';
+		const messageTemplate = 'Here\'s the list of answers I fetched for you:\n\n' +
+			'%s\n\n' +
+			'Please type the **number** of the answer you want to select.\n' +
+			'(The number inside the boxes)';
+		
+		var answerBlock = '';	// empty string so we don't get undefined crap everywhere
+		
+		// put question entries into a block one-by-one
+		question.answers.forEach((answer, index, array) => {
+			answerBlock += util.format(answerEntryTemplate, (index + 1), answer.score, answer.owner.name, answer.owner.reputation);
+		});
+		
+		Messages.Await(msg, util.format(messageTemplate, answerBlock), (err, _msg) => {
+			if (err) {
+				logger.error('Error sending answers prompt: %s', err);
+				Messages.Normal('There was an error sending the selection prompt. Try again?');
+				return;
+			}
+			
+			var selection = _msg.content.trim();
+			
+			if (isNaN(selection)) {
+				Messages.Normal(msg.channel, 'You did not enter a valid selection. Aborting.');
+				return;
+			}
+			
+			var selectionIndex = selection - 1;
+			
+			if (question.answers[selectionIndex] === (undefined||null)) {
+				Messages.Normal(msg.channel, 'That number was not a valid selection.');
+				return;
+			}
+			
+			question.answer = question.answers[selectionIndex];
+			
+			sendToChat(question, msg);
 		});
 	}
 };
 module.exports.moreStackQuestions = moreStackQuestions;
 
 // post question data in chat
-function sendToChat(title, answer, url, msg) {
-		const finishedMessage = util.format(
-			'**%s**\n' +
-			'<%s>\n\n' +
-			'```%s```\n' +
-			'**%s Points**\n\nAnswered by **%s** (%s) %s ago.%s\n\n' +
-			'*Use `%s` for more options.*  **Note: It is not recommended to copy/paste code snippets from this message.**',
-			
-			title,
-			url,
-			
-			entities.decode(answer.body_markdown).replace('\'\'\'', '\''),	// replace ''' with '
-			
-			Utility.emojiInteger(answer.score),
-			answer.owner.display_name,
-			answer.owner.reputation,
-			Utility.msToString(answer.creation_date),
-			(answer.last_edit_date ? '' : util.format('\nLast edit made %s ago.', Utility.msToString(answer.last_edit_date))),
-						
-			Config.Chat.StackListCommand);
-		
-		const backupMessage = util.format(
-			'The answer I fetched for you is too big to fit into Discord. Here\'s a link to it instead:\n<%s>',
-			url);
-		
-		Messages.Normal(msg.channel, (finishedMessage.length < 2000 ? finishedMessage : backupMessage));
+function sendToChat(question, msg) {
+	const finishedMessage = util.format(
+		'**%s**\n' +
+		'<%s>\n\n' +
+		'```%s```\n' +
+		'**%s Points**\n\nAnswered by **%s** (%s) %s ago.%s\n\n' +
+		'*Use `%s` for more options.*  **Note: It is not recommended to copy/paste code snippets from this message.**',
+
+		question.title,
+		question.url,
+
+		entities.decode(question.answer.body_markdown).replace('\'\'\'', '\''),	// replace ''' with '
+
+		Utility.emojiInteger(question.answer.score),
+		question.answer.owner.display_name,
+		question.answer.owner.reputation,
+		Utility.msToString(question.answer.creation_date),
+		(question.answer.last_edit_date ? '' : util.format('\nLast edit made %s ago.', Utility.msToString(question.answer.last_edit_date))),
+
+		Config.Chat.StackListCommand);
+
+	const backupMessage = util.format(
+		'The answer I fetched for you is too big to fit into Discord. Here\'s a link to it instead:\n<%s>',
+		question.url);
+
+	Messages.Normal(msg.channel, (finishedMessage.length < 2000 ? finishedMessage : backupMessage));
 }
 
-// fetch data from stackoverflow based on question id
+// fetch data from stackoverflow based on question id - adds 'answers' object to question object. expects an id property of question
 function getStackQuestionData(question, callback) {
 	var filter = {
 		key: Config.ApiKeys.StackApps,
@@ -151,26 +245,28 @@ function getStackQuestionData(question, callback) {
 	};
 	
 	logger.verbose('STACK: Fetching data for question %s.', question.id);
+	Stats.DB().apiRequests++;
 	
 	stackexchange.questions.answers(filter, (err, results) => {
 		if (err)
 			return callback(err);
-		else {
-			question.answers = results.items;	// set question answers
-			
-			// sort answers by score
-			question.answers.sort((a, b) => {
-				return a.score - b.score;
-			});
-			
-			question.answers.reverse();
-			
-			return callback(null, question);
-		}
+		
+		// set question answers
+		question.answers = results.items;
+
+		// sort answers by score
+		question.answers.sort((a, b) => {
+			return a.score - b.score;
+		});
+
+		question.answers.reverse();
+
+		return callback(null, question);
 	}, [question.id]);
 }
 
 function getStackQuestionID(url) {
+	logger.debug('getting stack id for url %s', url);
 	var qIDRegex = /.*stackoverflow.com\/questions\/(\d+)\//;
 	
 	try {

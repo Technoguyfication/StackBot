@@ -4,6 +4,7 @@ var google = require('google');
 
 var findSOQuestions = function(searchText, callback) {
 	google.resultsPerPage = 5;	// limit this to five.
+	Stats.DB().apiRequests++;
 	
 	// perform google search
 	google(util.format('site:www.stackoverflow.com %s', searchText), (err, res) => {
